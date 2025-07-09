@@ -6,15 +6,29 @@ export default function PlayPage() {
   const [step, setStep] = useState<'input' | 'verify'>('input');
   const [contact, setContact] = useState('');
   const [code, setCode] = useState('');
+  const [generatedCode, setGeneratedCode] = useState('');
+  const [message, setMessage] = useState('');
+
+  const generateCode = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
 
   const handleSend = () => {
     if (contact.trim()) {
+      const newCode = generateCode();
+      setGeneratedCode(newCode);
+      console.log('🔐 Code sent to user:', newCode); // ← später ersetzen durch echten Versand
       setStep('verify');
+      setMessage('');
     }
   };
 
   const handleVerify = () => {
-    alert(`You entered: ${code}`);
+    if (code === generatedCode) {
+      setMessage('✅ Code is correct. You are verified!');
+    } else {
+      setMessage('❌ Incorrect code. Please try again.');
+    }
   };
 
   return (
@@ -45,7 +59,10 @@ export default function PlayPage() {
 
         {step === 'verify' && (
           <div className="space-y-4">
-            <p className="text-sm text-gray-600">We’ve sent a 6-digit code to <strong>{contact}</strong></p>
+            <p className="text-sm text-gray-600">
+              We’ve sent a 6-digit code to <strong>{contact}</strong><br />
+              (for now: <code>{generatedCode}</code>)
+            </p>
             <input
               type="text"
               maxLength={6}
@@ -60,6 +77,11 @@ export default function PlayPage() {
             >
               Verify
             </button>
+            {message && (
+              <p className="text-sm font-medium mt-2" style={{ color: message.startsWith('✅') ? 'green' : 'red' }}>
+                {message}
+              </p>
+            )}
           </div>
         )}
       </div>
