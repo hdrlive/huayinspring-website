@@ -1,23 +1,24 @@
 export default function Home() {
   return (
-    <div className="bg-emerald-50 min-h-screen py-12 relative">
-      {/* Sprache-Button oben rechts */}
-      <div className="absolute top-[34px] right-[34px] z-10">
-        <a
-          href="https://huayinspring.de"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            src="/ZH_route.png"
-            alt="German Version"
-            className="w-[60px] hover:scale-105 transition-transform duration-200"
-          />
-        </a>
-      </div>
+    <div className="bg-emerald-50 min-h-screen py-12">
+      <main className="relative bg-white text-gray-900 font-sans px-6 py-12 sm:px-10 max-w-3xl mx-auto rounded-xl shadow-lg text-left">
+        
+        {/* Sprache-Button im weißen Feld */}
+        <div className="absolute top-[34px] right-[34px]">
+          <a
+            href="https://huayinspring.de"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/ZH_route.png"
+              alt="German Version"
+              className="w-[60px] hover:scale-105 transition-transform duration-200"
+            />
+          </a>
+        </div>
 
-      <main className="bg-white text-gray-900 font-sans px-6 py-12 sm:px-10 max-w-3xl mx-auto rounded-xl shadow-lg text-left">
-        <h1 className="text-4xl font-extrabold tracking-tight text-gray-800 mt-[4px]">
+        <h1 className="text-4xl font-extrabold tracking-tight text-gray-800 mt-[72px]">
           HUAYIN SPRING
         </h1>
         <h2 className="text-xl italic text-gray-500 mb-8">
@@ -64,6 +65,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 
