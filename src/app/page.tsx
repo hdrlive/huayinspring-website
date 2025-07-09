@@ -1,7 +1,24 @@
 export default function Home() {
   return (
     <div className="bg-emerald-50 min-h-screen py-12">
-      <main className="bg-white text-gray-900 font-sans px-6 py-12 sm:px-10 max-w-3xl mx-auto rounded-xl shadow-lg text-left">
+      <main className="relative bg-white text-gray-900 font-sans px-6 py-12 sm:px-10 max-w-3xl mx-auto rounded-xl shadow-lg text-left">
+
+        {/* ZH-Button oben rechts */}
+        <div className="absolute top-[34px] right-[34px] z-10">
+          <a
+            href="https://huayinspring.hk"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/ZH_route.png"
+              alt="Chinese Version"
+              className="w-10 hover:scale-105 transition-transform duration-200"
+            />
+          </a>
+        </div>
+
+        {/* Hauptinhalt */}
         <h1 className="text-4xl font-extrabold tracking-tight text-gray-800 mb-2">
           HUAYIN SPRING
         </h1>
@@ -12,43 +29,42 @@ export default function Home() {
         <p className="font-semibold text-base sm:text-lg mt-4">Your Cells: The Building Blocks of Life</p>
         <p>Your key to new energy and vitality = Holistic Cell Therapy</p>
 
-        <p className="mt-4">Do you often feel tired and exhausted?<br />
-        Do you notice that the challenges of everyday life cost more energy than they used to?<br />
-        The cause often lies deeper than you think – in the communication between your cells.</p>
+        <p className="mt-4">
+          Do you often feel tired and exhausted?<br />
+          Do you notice that the challenges of everyday life cost more energy than they used to?<br />
+          The cause often lies deeper than you think – in the communication between your cells.
+        </p>
 
-        <p className="mt-4">Discover your inner balance with holistic cell therapy<br />
-        and activate your self-healing powers.</p>
+        <p className="mt-4">
+          Discover your inner balance with holistic cell therapy<br />
+          and activate your self-healing powers.
+        </p>
 
         <p className="mt-6 font-medium">
           Would you like to learn more about modern and holistic cell therapy?
         </p>
 
-        <p className="mt-4">Register now and we will send you an invitation with a registration code by email.</p>
+        <p className="mt-4">
+          Register now and we will send you an invitation with a registration code by email.
+        </p>
 
+        {/* Footer */}
         <footer className="mt-12 text-sm text-gray-500 border-t border-gray-200 pt-6">
-          <p>Huayin Spring has extensive experience with confidentiality agreements (NDAs),
-          as required when working with family offices, private concierge services, and
-          medically sensitive cooperation partners.</p>
-          <p className="mt-2">Every inquiry, every recommendation, and every treatment is handled
-          in accordance with the highest confidentiality standards – contractually secured and
-          anonymized upon request.</p>
+          <p>
+            Huayin Spring has extensive experience with confidentiality agreements (NDAs),
+            as required when working with family offices, private concierge services, and
+            medically sensitive cooperation partners.
+          </p>
+          <p className="mt-2">
+            Every inquiry, every recommendation, and every treatment is handled
+            in accordance with the highest confidentiality standards – contractually secured and
+            anonymized upon request.
+          </p>
         </footer>
       </main>
-      <div className="mt-10 text-center">
-  <a
-    href="https://huayinspring.hk"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <img
-      src="/ZH_route.png"
-      alt="Chinese Version"
-      className="mx-auto w-20 hover:scale-105 transition-transform duration-200"
-    />
-  </a>
-</div>
     </div>
   );
 }
+
 
 
