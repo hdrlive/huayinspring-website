@@ -1,32 +1,32 @@
 export default function Home() {
   return (
-    <div className="bg-emerald-50 min-h-screen py-12">
-      <main className="relative bg-white text-gray-900 font-sans px-6 py-12 sm:px-10 max-w-3xl mx-auto rounded-xl shadow-lg text-left">
+    <div className="bg-emerald-50 min-h-screen py-12 relative">
+      {/* Sprache-Button oben rechts */}
+      <div className="absolute top-[34px] right-[34px] z-10">
+        <a
+          href="https://huayinspring.de"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="/ZH_route.png"
+            alt="German Version"
+            className="w-[60px] hover:scale-105 transition-transform duration-200"
+          />
+        </a>
+      </div>
 
-        {/* ZH-Button oben rechts */}
-        <div className="absolute top-[34px] right-[34px] z-10">
-          <a
-            href="https://huayinspring.hk"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/ZH_route.png"
-              alt="Chinese Version"
-              className="w-10 hover:scale-105 transition-transform duration-200"
-            />
-          </a>
-        </div>
-
-        {/* Hauptinhalt */}
-        <h1 className="text-4xl font-extrabold tracking-tight text-gray-800 mb-2">
+      <main className="bg-white text-gray-900 font-sans px-6 py-12 sm:px-10 max-w-3xl mx-auto rounded-xl shadow-lg text-left">
+        <h1 className="text-4xl font-extrabold tracking-tight text-gray-800 mt-[4px]">
           HUAYIN SPRING
         </h1>
         <h2 className="text-xl italic text-gray-500 mb-8">
           Where Culture meets Health
         </h2>
 
-        <p className="font-semibold text-base sm:text-lg mt-4">Your Cells: The Building Blocks of Life</p>
+        <p className="font-semibold text-base sm:text-lg mt-4">
+          Your Cells: The Building Blocks of Life
+        </p>
         <p>Your key to new energy and vitality = Holistic Cell Therapy</p>
 
         <p className="mt-4">
@@ -48,7 +48,6 @@ export default function Home() {
           Register now and we will send you an invitation with a registration code by email.
         </p>
 
-        {/* Footer */}
         <footer className="mt-12 text-sm text-gray-500 border-t border-gray-200 pt-6">
           <p>
             Huayin Spring has extensive experience with confidentiality agreements (NDAs),
