@@ -1,33 +1,24 @@
 export default function Home() {
   return (
-    <div className="bg-emerald-50 min-h-screen py-12">
-      <main className="relative bg-white text-gray-900 font-sans px-6 py-12 sm:px-10 max-w-3xl mx-auto rounded-xl shadow-lg text-left">
-        
-        {/* Sprache-Button im weißen Feld */}
-        <div className="absolute top-[34px] right-[34px]">
-          <a
-            href="https://huayinspring.hk"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/ZH_route.png"
-              alt="German Version"
-              className="w-[60px] hover:scale-105 transition-transform duration-200"
-            />
-          </a>
-        </div>
+    <div className="bg-emerald-50 min-h-screen py-8 px-2 sm:px-4 relative">
+      
+      {/* ZH-Button oben rechts */}
+      <a
+        href="https://huayinspring.hk"
+        className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-emerald-600 text-white text-sm sm:text-base px-5 py-2 rounded-md hover:bg-emerald-700 shadow-md"
+      >
+        ZH
+      </a>
 
-        <h1 className="text-4xl font-extrabold tracking-tight text-gray-800 mt-[72px]">
+      <main className="bg-white text-gray-900 font-sans px-6 py-12 sm:px-10 max-w-3xl mx-auto rounded-xl shadow-lg text-left border border-[#d4af37] sm:border-[1.5px]">
+        <h1 className="text-4xl font-extrabold tracking-tight text-gray-800 mb-2">
           HUAYIN SPRING
         </h1>
         <h2 className="text-xl italic text-gray-500 mb-8">
           Where Culture meets Health
         </h2>
 
-        <p className="font-semibold text-base sm:text-lg mt-4">
-          Your Cells: The Building Blocks of Life
-        </p>
+        <p className="font-semibold text-base sm:text-lg mt-4">Your Cells: The Building Blocks of Life</p>
         <p>Your key to new energy and vitality = Holistic Cell Therapy</p>
 
         <p className="mt-4">
