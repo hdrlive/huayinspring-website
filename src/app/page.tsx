@@ -34,6 +34,19 @@ export default function Home() {
           anonymized upon request.</p>
         </footer>
       </main>
+      <div className="mt-10 text-center">
+  <a
+    href="https://huayinspring.hk"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img
+      src="/ZH_route.png"
+      alt="Chinese Version"
+      className="mx-auto w-20 hover:scale-105 transition-transform duration-200"
+    />
+  </a>
+</div>
     </div>
   );
 }
