@@ -6,7 +6,7 @@ export default function Home() {
         {/* Sprache-Button im weißen Feld */}
         <div className="absolute top-[34px] right-[34px]">
           <a
-            href="https://huayinspring.de"
+            href="https://huayinspring.hk"
             target="_blank"
             rel="noopener noreferrer"
           >
