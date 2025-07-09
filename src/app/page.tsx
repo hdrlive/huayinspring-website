@@ -1,10 +1,10 @@
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#e0f0e9] flex items-center justify-center px-4">
+    <main className="min-h-screen bg-[#e0f0e9] flex items-center justify-center px-4 py-20">
       {/* White content container with golden border */}
-      <div className="relative bg-white max-w-3xl w-full p-10 rounded-2xl border-[2px] border-yellow-500">
+      <div className="relative bg-white max-w-3xl w-full p-10 rounded-2xl border-[2px] border-yellow-500 min-h-[800px]">
         
-        {/* ZH Button (PNG) in top-right corner, 9mm from top and right */}
+        {/* ZH Button (50% larger, same red border color) */}
         <a
           href="https://huayinspring.hk"
           className="absolute"
@@ -13,7 +13,7 @@ export default function Home() {
           <img
             src="/ZH_route.png"
             alt="ZH"
-            className="h-8 w-auto border-[2px] border-yellow-500 rounded"
+            className="h-12 w-auto border-[2px] border-[#74190f] rounded"
           />
         </a>
 
@@ -38,8 +38,8 @@ export default function Home() {
           <p>Register now and we will send you an invitation with a registration code by email.</p>
         </div>
 
-        {/* Footer note */}
-        <hr className="my-8 border-gray-200" />
+        {/* Footer note with red separator */}
+        <hr className="my-8 border-[#74190f]" />
         <div className="text-sm text-gray-500 space-y-2">
           <p>
             Huayin Spring has extensive experience with confidentiality agreements (NDAs), as required when working
