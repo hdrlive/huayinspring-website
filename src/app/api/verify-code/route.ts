@@ -6,11 +6,17 @@ export async function POST(req: Request) {
   const { email, code } = body;
 
   if (!email || !code) {
-    return NextResponse.json({ success: false, message: "Fehlende Daten" }, { status: 400 });
+    return NextResponse.json(
+      { success: false, message: "Ungültige Daten" },
+      { status: 400 }
+    );
   }
 
-  const stored = getCode(email);
-  const isValid = stored === code;
+  const savedCode = getCode(email);
 
-  return NextResponse.json({ success: isValid });
+  if (savedCode === code) {
+    return NextResponse.json({ success: true });
+  } else {
+    return NextResponse.json({ success: false, message: "Falscher Code" });
+  }
 }
