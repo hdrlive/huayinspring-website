@@ -4,25 +4,40 @@
 import { useState } from "react";
 
 export default function PlayPage() {
+  // ⬇️ Zustände für E-Mail und Codeeingabe
   const [email, setEmail] = useState("");
   const [codeSent, setCodeSent] = useState(false);
-  const [code, setCode] = useState("");
+  const [codeDigits, setCodeDigits] = useState(Array(6).fill(""));
   const [accessGranted, setAccessGranted] = useState(false);
 
+  // ⬇️ E-Mail absenden → Code anzeigen
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Replace with real API call to send code
-    console.log("Code sent to:", email);
+    console.log("Code gesendet an:", email);
     setCodeSent(true);
   };
 
+  // ⬇️ Eingabefeld für Code aktualisieren
+  const handleDigitChange = (index: number, value: string) => {
+    if (!/^\d?$/.test(value)) return; // Nur Ziffern erlaubt
+    const newDigits = [...codeDigits];
+    newDigits[index] = value;
+    setCodeDigits(newDigits);
+
+    const nextInput = document.getElementById(`code-${index + 1}`);
+    if (value && nextInput) {
+      (nextInput as HTMLInputElement).focus();
+    }
+  };
+
+  // ⬇️ Code prüfen → Weiterleiten
   const handleCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Replace with real API verification
-    if (code === "123456") {
+    const fullCode = codeDigits.join("");
+    if (fullCode === "123456") {
       document.cookie = "access_granted=true; max-age=86400; path=/";
       setAccessGranted(true);
-      window.location.href = "/home"; // Zielseite nach erfolgreicher Anmeldung
+      window.location.href = "/home";
     } else {
       alert("Falscher Code. Bitte erneut eingeben.");
     }
@@ -37,6 +52,7 @@ export default function PlayPage() {
         </h2>
 
         {!codeSent ? (
+          // ⬇️ Formular für E-Mail-Eingabe
           <form onSubmit={handleEmailSubmit}>
             <label className="block mb-2 font-medium text-gray-700">
               Ihre E-Mail-Adresse:
@@ -46,7 +62,7 @@ export default function PlayPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded border border-gray-300 mb-4 text-sm"
+              className="w-full px-4 py-3 rounded border border-gray-300 mb-4 text-sm text-black"
               placeholder="email@example.com"
             />
             <button
@@ -57,18 +73,25 @@ export default function PlayPage() {
             </button>
           </form>
         ) : (
+          // ⬇️ Formular für Code-Eingabe (6 Felder)
           <form onSubmit={handleCodeSubmit}>
             <label className="block mb-2 font-medium text-gray-700">
               Bestätigungscode eingeben:
             </label>
-            <input
-              type="text"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              maxLength={6}
-              className="w-full px-4 py-3 rounded border border-gray-300 mb-4 text-sm tracking-widest"
-              placeholder="123456"
-            />
+            <div className="flex justify-between gap-2 mb-4">
+              {codeDigits.map((digit, idx) => (
+                <input
+                  key={idx}
+                  id={`code-${idx}`}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleDigitChange(idx, e.target.value)}
+                  className="w-12 h-12 text-center border border-gray-300 rounded text-xl text-black"
+                />
+              ))}
+            </div>
             <button
               type="submit"
               className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded"
