@@ -1,45 +1,63 @@
-// src/app/play/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function PlayPage() {
-  // ⬇️ Zustände für E-Mail und Codeeingabe
   const [email, setEmail] = useState("");
   const [codeSent, setCodeSent] = useState(false);
-  const [codeDigits, setCodeDigits] = useState(Array(6).fill(""));
-  const [accessGranted, setAccessGranted] = useState(false);
+  const [code, setCode] = useState(Array(6).fill(""));
+  const inputRefs = useRef<HTMLInputElement[]>([]);
 
-  // ⬇️ E-Mail absenden → Code anzeigen
+  // Fokus auf erstes Feld beim Anzeigen
+  useEffect(() => {
+    if (codeSent && inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
+  }, [codeSent]);
+
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Code gesendet an:", email);
-    setCodeSent(true);
-  };
-
-  // ⬇️ Eingabefeld für Code aktualisieren
-  const handleDigitChange = (index: number, value: string) => {
-    if (!/^\d?$/.test(value)) return; // Nur Ziffern erlaubt
-    const newDigits = [...codeDigits];
-    newDigits[index] = value;
-    setCodeDigits(newDigits);
-
-    const nextInput = document.getElementById(`code-${index + 1}`);
-    if (value && nextInput) {
-      (nextInput as HTMLInputElement).focus();
+    try {
+      await fetch("/api/send-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      setCodeSent(true);
+    } catch (err) {
+      alert("Fehler beim Senden des Codes.");
     }
   };
 
-  // ⬇️ Code prüfen → Weiterleiten
+  const handleCodeChange = (index: number, value: string) => {
+    if (!/^[0-9]?$/.test(value)) return;
+    const newCode = [...code];
+    newCode[index] = value;
+    setCode(newCode);
+
+    if (value && inputRefs.current[index + 1]) {
+      inputRefs.current[index + 1].focus();
+    }
+  };
+
   const handleCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const fullCode = codeDigits.join("");
-    if (fullCode === "123456") {
-      document.cookie = "access_granted=true; max-age=86400; path=/";
-      setAccessGranted(true);
-      window.location.href = "/home";
-    } else {
-      alert("Falscher Code. Bitte erneut eingeben.");
+    const fullCode = code.join("");
+    try {
+      const response = await fetch("/api/verify-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code: fullCode }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        document.cookie = "access_granted=true; max-age=86400; path=/";
+        window.location.href = "/home";
+      } else {
+        alert("Falscher Code.");
+      }
+    } catch {
+      alert("Fehler bei der Code-Verifizierung.");
     }
   };
 
@@ -52,7 +70,6 @@ export default function PlayPage() {
         </h2>
 
         {!codeSent ? (
-          // ⬇️ Formular für E-Mail-Eingabe
           <form onSubmit={handleEmailSubmit}>
             <label className="block mb-2 font-medium text-gray-700">
               Ihre E-Mail-Adresse:
@@ -62,7 +79,7 @@ export default function PlayPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded border border-gray-300 mb-4 text-sm text-black"
+              className="w-full px-4 py-3 rounded border border-gray-300 mb-4 text-sm"
               placeholder="email@example.com"
             />
             <button
@@ -73,22 +90,21 @@ export default function PlayPage() {
             </button>
           </form>
         ) : (
-          // ⬇️ Formular für Code-Eingabe (6 Felder)
           <form onSubmit={handleCodeSubmit}>
             <label className="block mb-2 font-medium text-gray-700">
               Bestätigungscode eingeben:
             </label>
             <div className="flex justify-between gap-2 mb-4">
-              {codeDigits.map((digit, idx) => (
+              {code.map((digit, index) => (
                 <input
-                  key={idx}
-                  id={`code-${idx}`}
+                  key={index}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
                   value={digit}
-                  onChange={(e) => handleDigitChange(idx, e.target.value)}
-                  className="w-12 h-12 text-center border border-gray-300 rounded text-xl text-black"
+                  onChange={(e) => handleCodeChange(index, e.target.value)}
+                  ref={(el) => (inputRefs.current[index] = el!)}
+                  className="w-12 h-12 text-center text-xl border border-gray-300 rounded"
                 />
               ))}
             </div>
@@ -104,3 +120,4 @@ export default function PlayPage() {
     </main>
   );
 }
+
