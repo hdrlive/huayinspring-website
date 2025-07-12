@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 const codes = new Map<string, string>(); // Temporäre Speicherung im RAM
 
 // Funktion zur Generierung eines 6-stelligen Codes ohne "4"
-// Glückszahlen (8, 6, 9) bevorzugt
+// Bevorzugung chinesischer Glückszahlen
 function generateLuckyCode(): string {
-  const luckyDigits = ['8','8','8','6','6','9','9','5','3','2','1','0']; // 8 häufig
+  const luckyDigits = ['8', '8', '8', '6', '6', '9', '9', '5', '3', '2', '0'];
   let code = '';
   while (code.length < 6) {
     const digit = luckyDigits[Math.floor(Math.random() * luckyDigits.length)];
