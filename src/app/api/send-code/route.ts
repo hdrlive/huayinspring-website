@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { saveCode } from "@/lib/codestore";
+import { saveCode } from "../../../lib/codestore";
 
 function generateLuckyCode(): string {
   const luckyDigits = ["1", "2", "3", "5", "6", "7", "8", "9"];
