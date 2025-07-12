@@ -23,6 +23,6 @@ export async function POST(req: Request) {
   saveCode(email, code);
 
   console.log(`🔐 Verifizierungscode für ${email}: ${code}`);
-+
+
   return NextResponse.json({ success: true });
 }
