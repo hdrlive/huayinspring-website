@@ -1,0 +1,21 @@
+// src/app/api/verify-code/route.ts
+import { NextResponse } from "next/server";
+import { getCode, deleteCode } from "@/app/lib/codeStore";
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const { email, code } = body;
+
+  if (!email || !code) {
+    return NextResponse.json({ success: false, message: "E-Mail oder Code fehlt" }, { status: 400 });
+  }
+
+  const validCode = getCode(email);
+
+  if (code === validCode) {
+    deleteCode(email); // Einmaliger Code
+    return NextResponse.json({ success: true });
+  }
+
+  return NextResponse.json({ success: false, message: "Falscher Code" }, { status: 401 });
+}
