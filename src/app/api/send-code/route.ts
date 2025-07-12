@@ -1,17 +1,12 @@
-// src/app/api/send-code/route.ts
 import { NextResponse } from "next/server";
-import { saveCode } from "@/app/lib/codeStore";
-
-// Liste chinesischer Glückszahlen
-const luckyDigits = ["6", "8", "9"];
+import { saveCode } from "@/lib/codestore";
 
 function generateLuckyCode(): string {
+  const luckyDigits = ["1", "2", "3", "5", "6", "7", "8", "9"];
   let code = "";
   while (code.length < 6) {
-    const digit = Math.floor(Math.random() * 10).toString();
-    if (digit !== "4") {
-      code += Math.random() < 0.4 ? luckyDigits[Math.floor(Math.random() * luckyDigits.length)] : digit;
-    }
+    const digit = luckyDigits[Math.floor(Math.random() * luckyDigits.length)];
+    code += digit;
   }
   return code;
 }
@@ -27,7 +22,7 @@ export async function POST(req: Request) {
   const code = generateLuckyCode();
   saveCode(email, code);
 
-  console.log(`📨 Code für ${email}: ${code}`);
+  console.log(`🔐 Verifizierungscode für ${email}: ${code}`);
 
   return NextResponse.json({ success: true });
 }
