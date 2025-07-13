@@ -1,22 +1,26 @@
 import { NextResponse } from "next/server";
-import { getCode } from "../../../lib/codestore";
+import { saveCode } from "../../../lib/codestore";
+
+function generateCode(): string {
+  return "123456"; // Platzhalter für echten Code
+}
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { email, code } = body;
+  const { email } = body;
 
-  if (!email || !code) {
+  if (!email) {
     return NextResponse.json(
-      { success: false, message: "Ungültige Daten" },
+      { success: false, message: "E-Mail fehlt" },
       { status: 400 }
     );
   }
 
-  const savedCode = getCode(email);
+  const code = generateCode();
+  saveCode(email, code);
 
-  if (savedCode === code) {
-    return NextResponse.json({ success: true });
-  } else {
-    return NextResponse.json({ success: false, message: "Falscher Code" });
-  }
+  // Hier würdest du den Code per E-Mail oder SMS senden
+  console.log(`📨 Code für ${email}: ${code}`);
+
+  return NextResponse.json({ success: true });
 }
