@@ -7,4 +7,3 @@ export function saveCode(email: string, code: string) {
 export function getCode(email: string): string | undefined {
   return codes.get(email);
 }
-
