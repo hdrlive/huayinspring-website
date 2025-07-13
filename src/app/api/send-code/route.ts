@@ -19,8 +19,5 @@ export async function POST(req: Request) {
   const code = generateCode();
   saveCode(email, code);
 
-  // Hier würdest du den Code per E-Mail oder SMS senden
-  console.log(`📨 Code für ${email}: ${code}`);
-
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, code });
 }
