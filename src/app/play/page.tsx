@@ -1,44 +1,122 @@
-// src/app/play/page.tsx
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+
 export default function PlayPage() {
+  const [email, setEmail] = useState("");
+  const [codeSent, setCodeSent] = useState(false);
+  const [code, setCode] = useState(Array(6).fill(""));
+  const inputRefs = useRef<HTMLInputElement[]>([]);
+
+  // Fokus auf erstes Feld beim Anzeigen
+  useEffect(() => {
+    if (codeSent && inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
+  }, [codeSent]);
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await fetch("/api/send-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      setCodeSent(true);
+    } catch (err) {
+      alert("Fehler beim Senden des Codes.");
+    }
+  };
+
+  const handleCodeChange = (index: number, value: string) => {
+    if (!/^[0-9]?$/.test(value)) return;
+    const newCode = [...code];
+    newCode[index] = value;
+    setCode(newCode);
+
+    if (value && inputRefs.current[index + 1]) {
+      inputRefs.current[index + 1].focus();
+    }
+  };
+
+  const handleCodeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const fullCode = code.join("");
+    try {
+      const response = await fetch("/api/verify-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code: fullCode }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        document.cookie = "access_granted=true; max-age=86400; path=/";
+        window.location.href = "/home";
+      } else {
+        alert("Falscher Code.");
+      }
+    } catch {
+      alert("Fehler bei der Code-Verifizierung.");
+    }
+  };
+
   return (
-    <main className="bg-white max-w-3xl mx-auto p-6 mt-12 rounded-2xl shadow-xl border border-yellow-400">
-      <h1 className="text-3xl font-semibold text-center mb-6">HUAYIN SPRING</h1>
-      <h2 className="text-xl font-medium text-center text-gray-700 mb-8">
-        Ihre Gesundheit in besten Händen
-      </h2>
+    <main className="flex items-center justify-center min-h-screen bg-black">
+      <div className="bg-white rounded-2xl p-8 max-w-xl w-full shadow-xl border border-yellow-400">
+        <h1 className="text-center text-gray-200 text-2xl font-bold mb-2">HUAYIN SPRING</h1>
+        <h2 className="text-center text-lg font-semibold text-gray-800 mb-6">
+          Ihre Gesundheit in besten Händen
+        </h2>
 
-      <p className="text-gray-600 mb-4">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
-        fermentum nunc sed tellus facilisis, vel hendrerit justo tincidunt.
-        Integer lobortis metus at tellus lacinia, a gravida arcu dapibus.
-        Curabitur quis libero eu nisi tincidunt luctus. Nulla ac sapien sed
-        lorem fringilla tincidunt.
-      </p>
-
-      <p className="text-gray-600 mb-6">
-        Pellentesque habitant morbi tristique senectus et netus et malesuada
-        fames ac turpis egestas. Vivamus euismod erat sit amet ex sagittis
-        porttitor. Nunc bibendum, justo nec facilisis commodo, velit massa
-        sollicitudin turpis, at vulputate nulla nisl ac urna.
-      </p>
-
-      <form className="flex flex-col gap-4">
-        <label htmlFor="email" className="font-medium text-gray-800">
-          Ihre E-Mail-Adresse:
-        </label>
-        <input
-          type="email"
-          id="email"
-          placeholder="email@example.com"
-          className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-        />
-        <button
-          type="submit"
-          className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
-        >
-          Registrieren
-        </button>
-      </form>
+        {!codeSent ? (
+          <form onSubmit={handleEmailSubmit}>
+            <label className="block mb-2 font-medium text-gray-700">
+              Ihre E-Mail-Adresse:
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded border border-gray-300 mb-4 text-sm"
+              placeholder="email@example.com"
+            />
+            <button
+              type="submit"
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded"
+            >
+              Weiter
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleCodeSubmit}>
+            <label className="block mb-2 font-medium text-gray-700">
+              Bestätigungscode eingeben:
+            </label>
+            <div className="flex justify-between gap-2 mb-4">
+              {code.map((digit, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleCodeChange(index, e.target.value)}
+                  ref={(el) => (inputRefs.current[index] = el!)}
+                  className="w-12 h-12 text-center text-xl border border-gray-300 rounded"
+                />
+              ))}
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded"
+            >
+              Code bestätigen
+            </button>
+          </form>
+        )}
+      </div>
     </main>
   );
 }
