@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCode } from "../../../lib/codestore";
+import { getCode } from "../../lib/codestore";
 
 export async function POST(req: Request) {
   const body = await req.json();
