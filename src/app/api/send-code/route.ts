@@ -1,26 +1,37 @@
 import { NextResponse } from "next/server";
-import { saveCode, getCode } from "../lib/codestore";
+import { saveCode } from '@/app/lib/codestore';
 
-function generateCode(): string {
-  return "123456"; // Platzhalter für echten Code
+function generateSecureCode(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const { email } = body;
+  try {
+    const body = await req.json();
+    const { email } = body;
 
-  if (!email) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json(
+        { success: false, message: "Ungültige E-Mail-Adresse" },
+        { status: 400 }
+      );
+    }
+
+    const code = generateSecureCode();
+    await saveCode(email, code);
+
+    console.log(`Bestätigungscode für ${email}: ${code}`);
+    
+    return NextResponse.json({ 
+      success: true,
+      message: "Bestätigungscode wurde generiert"
+    });
+
+  } catch (error) {
+    console.error("Fehler in /api/send-code:", error);
     return NextResponse.json(
-      { success: false, message: "E-Mail fehlt" },
-      { status: 400 }
+      { success: false, message: "Interner Serverfehler" },
+      { status: 500 }
     );
   }
-
-  const code = generateCode();
-  saveCode(email, code);
-
-  // Hier kannst du den Code z. B. per E-Mail oder SMS senden
-  console.log("Gesendeter Code:", code);
-
-  return NextResponse.json({ success: true });
 }

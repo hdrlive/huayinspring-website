@@ -1,67 +1,84 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function PlayPage() {
   const [email, setEmail] = useState("");
   const [codeSent, setCodeSent] = useState(false);
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const [accessGranted, setAccessGranted] = useState(false);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [code, setCode] = useState(Array(6).fill(""));
 
+  // Fokus auf erstes Feld nach dem Rendern
   useEffect(() => {
     if (codeSent) {
-      inputRefs.current[0]?.focus(); // Erstes Feld aktiv
+      const firstInput = document.getElementById("code-input-0") as HTMLInputElement | null;
+      if (firstInput) firstInput.focus();
     }
   }, [codeSent]);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch("/api/send-code", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    const data = await res.json();
-    if (data.success) {
+    try {
+      await fetch("/api/send-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
       setCodeSent(true);
-    } else {
+    } catch (err) {
       alert("Fehler beim Senden des Codes.");
     }
   };
 
   const handleCodeChange = (index: number, value: string) => {
     if (!/^[0-9]?$/.test(value)) return;
-    const updatedCode = [...code];
-    updatedCode[index] = value;
-    setCode(updatedCode);
+    const newCode = [...code];
+    newCode[index] = value;
+    setCode(newCode);
+
     if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
+      const nextInput = document.getElementById(`code-input-${index + 1}`) as HTMLInputElement | null;
+      if (nextInput) nextInput.focus();
+    }
+  };
+
+  const handleCodeKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !code[index] && index > 0) {
+      const prevInput = document.getElementById(`code-input-${index - 1}`) as HTMLInputElement | null;
+      if (prevInput) prevInput.focus();
     }
   };
 
   const handleCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const fullCode = code.join("");
-    const res = await fetch("/api/verify-code", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, code: fullCode }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      document.cookie = "access_granted=true; max-age=86400; path=/";
-      setAccessGranted(true);
-      window.location.href = "/home";
-    } else {
-      alert("Falscher Code. Bitte erneut eingeben.");
+    try {
+      const response = await fetch("/api/verify-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code: fullCode }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        document.cookie = "access_granted=true; max-age=86400; path=/";
+        window.location.href = "/home";
+      } else {
+        alert("Falscher Code.");
+        // Optional: Code zurücksetzen und Fokus auf erstes Feld
+        setCode(Array(6).fill(""));
+        setTimeout(() => {
+          const firstInput = document.getElementById("code-input-0") as HTMLInputElement | null;
+          if (firstInput) firstInput.focus();
+        }, 0);
+      }
+    } catch {
+      alert("Fehler bei der Code-Verifizierung.");
     }
   };
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-black">
       <div className="bg-white rounded-2xl p-8 max-w-xl w-full shadow-xl border border-yellow-400">
-        <h1 className="text-center text-gray-300 text-2xl font-bold mb-2">HUAYIN SPRING</h1>
+        <h1 className="text-center text-gray-800 text-2xl font-bold mb-2">HUAYIN SPRING</h1>
         <h2 className="text-center text-lg font-semibold text-gray-800 mb-6">
           Ihre Gesundheit in besten Händen
         </h2>
@@ -76,7 +93,7 @@ export default function PlayPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded border border-gray-300 mb-4 text-sm text-black"
+              className="w-full px-4 py-3 rounded border border-gray-300 mb-4 text-sm"
               placeholder="email@example.com"
             />
             <button
@@ -88,20 +105,21 @@ export default function PlayPage() {
           </form>
         ) : (
           <form onSubmit={handleCodeSubmit}>
-            <label className="block mb-4 font-medium text-gray-700">
+            <label className="block mb-2 font-medium text-gray-700">
               Bestätigungscode eingeben:
             </label>
-            <div className="flex justify-between mb-4 gap-2">
+            <div className="flex justify-between gap-2 mb-4">
               {code.map((digit, index) => (
                 <input
                   key={index}
-                  ref={(el) => (inputRefs.current[index] = el)}
+                  id={`code-input-${index}`}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
-                  className="w-12 h-12 text-center border border-gray-300 rounded text-black text-lg"
                   value={digit}
                   onChange={(e) => handleCodeChange(index, e.target.value)}
+                  onKeyDown={(e) => handleCodeKeyDown(index, e)}
+                  className="w-12 h-12 text-center text-xl border border-gray-300 rounded"
                 />
               ))}
             </div>
