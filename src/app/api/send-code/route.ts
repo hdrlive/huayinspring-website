@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { saveCode, getCode } from "../../../lib/codestore";
+import { saveCode, getCode } from "../../lib/codestore";
 
 function generateCode(): string {
   return "123456"; // Platzhalter für echten Code
@@ -24,4 +24,3 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ success: true });
 }
-
