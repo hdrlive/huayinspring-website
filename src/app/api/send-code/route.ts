@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { saveCode, getCode } from "../../../lib/codestore";
+import { saveCode, getCode } from "@/lib/codestore";
 
 function generateCode(): string {
   return "123456"; // Platzhalter für echten Code
@@ -19,6 +19,8 @@ export async function POST(req: Request) {
   const code = generateCode();
   saveCode(email, code);
 
-  return NextResponse.json({ success: true, code });
-}
+  // Hier kannst du den Code z. B. per E-Mail oder SMS senden
+  console.log("Gesendeter Code:", code);
 
+  return NextResponse.json({ success: true });
+}
