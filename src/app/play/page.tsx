@@ -27,7 +27,9 @@ export default function PlayPage() {
     } catch (err) {
       alert("Fehler beim Senden des Codes.");
     }
-  };
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+};
 
   const handleCodeChange = (index: number, value: string) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -65,9 +67,10 @@ export default function PlayPage() {
     <main className="flex items-center justify-center min-h-screen bg-black">
       <div className="bg-white rounded-2xl p-8 max-w-xl w-full shadow-xl border border-yellow-400">
         <h1 className="text-center text-gray-200 text-2xl font-bold mb-2">HUAYIN SPRING</h1>
-        <h2 className="text-center text-lg font-semibold text-gray-800 mb-6">
-          Ihre Gesundheit in besten Händen
-        </h2>
+<h2 className="text-center text-lg font-semibold text-gray-800 mb-6">
+  Ihre Gesundheit in besten Händen
+</h2>
+      
 
         {!codeSent ? (
           <form onSubmit={handleEmailSubmit}>
@@ -97,13 +100,25 @@ export default function PlayPage() {
             <div className="flex justify-between gap-2 mb-4">
               {code.map((digit, index) => (
                 <input
-                  key={index}
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={1}
-                  value={digit}
-                  onChange={(e) => handleCodeChange(index, e.target.value)}
-                  ref={(el) => (inputRefs.current[index] = el!)}
+  key={index}
+  type="text"
+  inputMode="numeric"
+  maxLength={1}
+  value={digit}
+  onChange={(e) => handleCodeChange(index, e.target.value)}
+  ref={(el: HTMLInputElement | null) => {
+    if (el) inputRefs.current[index] = el;
+  }}
+  className="w-12 h-12 text-center text-xl border border-gray-300 rounded"
+/>
+
+ref={(el: HTMLInputElement | null) => {
+  if (el) inputRefs.current[index] = el;
+}}
+
+
+}}
+
                   className="w-12 h-12 text-center text-xl border border-gray-300 rounded"
                 />
               ))}
