@@ -1,7 +1,14 @@
+const path = require("path");
+const normalizePath = require("normalize-path");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true
+  webpack: (config) => {
+    config.resolve.alias["@" ] = normalizePath(path.resolve(__dirname, "src"));
+    return config;
+  },
 };
 
 module.exports = nextConfig;
+
+
