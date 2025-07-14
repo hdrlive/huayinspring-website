@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { saveCode } from '@/app/lib/codestore';
+import { saveCode } from '@/lib/codestore';
 
 function generateSecureCode(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
