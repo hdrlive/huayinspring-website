@@ -1,16 +1,31 @@
-import { NextResponse } from "next/server";
-import { saveCode } from "@/lib/codestore";   // ← Alias wieder aktiv
+import { NextResponse } from 'next/server';
+import { generateCode } from '@/lib/codestore';
+import { sendEmail } from '@/lib/email';
 
-export async function POST(req: Request) {
-  const { email } = await req.json();
+export async function POST(request: Request) {
+  const { email } = await request.json();
+  
+  if (!email) {
+    return NextResponse.json(
+      { error: "Email ist erforderlich" },
+      { status: 400 }
+    );
+  }
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-    return NextResponse.json({ error: "Invalid email" }, { status: 400 });
-
-  const code = Math.floor(100000 + Math.random() * 900000).toString();
-  saveCode(email, code);
-
-  // TODO: Mailversand integrieren
-  return NextResponse.json({ success: true });
+  try {
+    const code = await generateCode(email);
+    await sendEmail(email, code);
+    
+    return NextResponse.json(
+      { success: true },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Fehler beim Senden des Codes:", error);
+    return NextResponse.json(
+      { error: "Interner Serverfehler" },
+      { status: 500 }
+    );
+  }
 }
 
